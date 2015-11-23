@@ -4,6 +4,7 @@
 #
 # Revision History:
 #
+#   v1.0.3  2015-11-23  Fixed error output if already configured, fixed version
 #   v1.0.2  2015-11-10	Removed syntax error, updated for fixed path to logrotate,
 #			Updated to seed automatically DNS host is not defined
 #   v1.0.1  2015-11-02	Added @reboot entry to crontab file
@@ -14,6 +15,7 @@ set -e
 
 SCRIPTNAME=`readlink -e $0`
 BASEDIR=`dirname $SCRIPTNAME`
+VERSION=1.0.3
 
 LOGFILE=${BASEDIR}/`basename $SCRIPTNAME .sh`.log
 ROTATESCRIPT=${BASEDIR}/.`basename $SCRIPTNAME .sh`.logrotate
@@ -236,7 +238,7 @@ checkConfiguration()
 configure()
 {
     if checkConfiguration; then
-	logMessage F "System already configured to run $UPDATESH_PATH automatically"
+	logMessage F "System already configured to run $SCRIPTNAME automatically"
 	return
     fi
 
@@ -328,7 +330,7 @@ do
             ;;
 
 	--version)
-	    echo `basename $0` version 1.0.1
+	    echo `basename $0` version $VERSION
 	    cleanExit 0
 	    ;;
 
