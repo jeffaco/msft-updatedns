@@ -2,20 +2,12 @@
 
 # updatedns.sh: Update dynamic DHCP addresses to scx.com DNS server
 #
-# Revision History:
-#
-#   v1.0.3  2015-11-23  Fixed error output if already configured, fixed version
-#   v1.0.2  2015-11-10	Removed syntax error, updated for fixed path to logrotate,
-#			Updated to seed automatically DNS host is not defined
-#   v1.0.1  2015-11-02	Added @reboot entry to crontab file
-#   v1.0.0  2015-11-01	Initial Release
-
 
 set -e
 
 SCRIPTNAME=`readlink -e $0`
 BASEDIR=`dirname $SCRIPTNAME`
-VERSION=1.0.3
+VERSION=1.0.4
 
 LOGFILE=${BASEDIR}/`basename $SCRIPTNAME .sh`.log
 ROTATESCRIPT=${BASEDIR}/.`basename $SCRIPTNAME .sh`.logrotate
@@ -89,7 +81,7 @@ logMessage()
 	    printf '%s %-25s %s\n' "$TIMESTAMP" "${HEADER}:" "$DETAIL" >> $LOGFILE
 	fi
 
-	if [ $VERBOSE -ne 0 -o $DISP == "F" ]; then
+	if [ $VERBOSE -ne 0 -o "$DISP" = "F" ]; then
 	    printf '%-25s %s\n' "${HEADER}:" "$DETAIL"
 	fi
     else
@@ -97,7 +89,7 @@ logMessage()
 	    echo "${TIMESTAMP} $HEADER" >> $LOGFILE
 	fi
 
-	if [ $VERBOSE -ne 0 -o $DISP == "F" ]; then
+	if [ $VERBOSE -ne 0 -o $DISP = "F" ]; then
 	    echo "$HEADER"
 	fi
     fi
@@ -171,7 +163,7 @@ updateIPAddress()
 	logMessage N "Host address not found in DNS"
     fi
 
-    if [ "${DNS_ADDRESS}" == "${ACTUAL_IP}" ]; then
+    if [ "${DNS_ADDRESS}" = "${ACTUAL_IP}" ]; then
 	logMessage N "DNS address (${DNS_ADDRESS}) matches actual TCP/IP address"
 	[ ${FORCE} -eq 0 ] && return
 	logMessage N "DNS address will be updated to due --force qualifier"
