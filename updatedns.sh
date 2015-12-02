@@ -49,9 +49,9 @@ logMessage()
     #   3:  Mesage detail (optional)
     #
 
-    local DISP=$1
-    local HEADER=$2
-    local DETAIL=$3
+    local DISP="$1"
+    local HEADER="$2"
+    local DETAIL="$3"
 
     if [ -z "$HEADER" ]; then
 	echo "FATAL: logMessage requires at least one parameter (message to log)" 1>& 2
