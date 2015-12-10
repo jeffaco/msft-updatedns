@@ -192,7 +192,8 @@ updateResolvConf()
 domain scx.com
 search scx.com
 nameserver 10.217.2.6
-nameserver 10.195.2.6
+nameserver 10.195.172.6
+nameserver 10.231.216.235
 EOF
 
     local updFlag=0
