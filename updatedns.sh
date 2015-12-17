@@ -251,7 +251,7 @@ EOF
     crontab -l > $TEMPFILE 2> /dev/null || true
     echo "@reboot         ${SCRIPTNAME}" >> $TEMPFILE
     echo "*/15 * * * *    ${SCRIPTNAME}" >> $TEMPFILE
-    echo "2 0 * * 0       /sbin/logrotate --state ${ROTATESTATE} $ROTATESCRIPT" >> $TEMPFILE
+    echo "2 0 * * 0       /usr/sbin/logrotate --state ${ROTATESTATE} $ROTATESCRIPT" >> $TEMPFILE
     crontab < $TEMPFILE
 
     logMessage N "Crontab configured to run $SCRIPTNAME automatically"
