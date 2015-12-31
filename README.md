@@ -39,59 +39,31 @@ where updates are kept. This is hard-coded in the script, but can trivially be
 changed if necessary. To modify the host Windows system to reference the DNS
 server, this is done via the Control Panel:
 
-<html>
-<body>
-<img src="images/1 - Control Panel.jpg" alt="Control Panel" style="width:838px;height454px;">
-</body>
-</html>
+![Left](images/1 - Control Panel.jpg)
 
 Select Network and Internet:
 
-<html>
-<body>
-<img src="images/2 - Network.jpg" alt="Network" style="width:837px;height345px;">
-</body>
-</html>
+![Left](images/2 - Network.jpg)
 
 Select Network and Sharing Center:
 
-<html>
-<body>
-<img src="images/3 - Network Sharing.jpg" alt="Network Sharing" style="width:843px;height375px;">
-</body>
-</html>
+![Left](images/3 - Network Sharing.jpg)
 
 Select your network controller:
 
-<html>
-<body>
-<img src="images/4 - Controller.jpg" alt="Controller" style="width:366px;height453px;">
-</body>
-</html>
+![Left](images/4 - Controller.jpg)
 
 Click the "Properties" button:
 
-<html>
-<body>
-<img src="images/5 - Properties.jpg" alt="Properties" style="width:377px;height502px;">
-</body>
-</html>
+![Left](images/5 - Properties.jpg)
 
 Select "Internet Protocol Version 4 (TP/IP v4) and click "Properties" button:
 
-<html>
-<body>
-<img src="images/6 - TCP Properties.jpg" alt="TCP Properties" style="width:403px;height458px;">
-</body>
-</html>
+![Left](images/6 - TCP Properties.jpg)
 
 Select "Use the following DNS server addresses:", enter 10.217.2.6, along with the backup DNS server 10.195.172.6 and click "Advanced":
 
-<html>
-<body>
-<img src="images/7 - DNS Settings.jpg" alt="DNS Settings" style="width:403px;height492px;">
-</body>
-</html>
+![Left](images/7 - DNS Settings.jpg)
 
 Select the "DNS" tab, and set up DNS suffixes as shown above. Add these suffixes:
 
