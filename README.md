@@ -61,7 +61,7 @@ Select "Internet Protocol Version 4 (TP/IP v4) and click "Properties" button:
 
 ![Left](images/6 - TCP Properties.jpg)
 
-Select "Use the following DNS server addresses:", enter 10.217.2.6, along with the backup DNS server 10.195.172.6 and click "Advanced":
+Select "Use the following DNS server addresses:", enter 10.228.124.13, along with the backup DNS server 10.177.9.182 and click "Advanced":
 
 ![Left](images/7 - DNS Settings.jpg)
 

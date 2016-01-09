@@ -106,7 +106,7 @@ getDNSAddress()
 
     # Fetch our DNS address from the DNS server
 
-    DNS_ADDRESS=`dig @10.217.2.6 ${HOSTNAME}.scx.com +short`
+    DNS_ADDRESS=`dig @10.228.124.13 ${HOSTNAME}.scx.com +short`
 
     if [ -n "${DNS_ADDRESS}" ]; then
 	logMessage V "TCP/IP address from DNS" "${DNS_ADDRESS}"
@@ -141,7 +141,7 @@ deleteIPAddress()
     fi
 
     if /usr/bin/nsupdate <<EOF; then
-server 10.217.2.6
+server 10.228.124.13
 zone scx.com
 update delete ${HOSTNAME}.scx.com. A
 send
@@ -174,7 +174,7 @@ updateIPAddress()
     #
 
     if ! /usr/bin/nsupdate <<EOF; then
-server 10.217.2.6
+server 10.228.124.13
 zone scx.com
 update delete ${HOSTNAME}.scx.com. A
 update add ${HOSTNAME}.scx.com. 300 A ${ACTUAL_IP}
@@ -191,9 +191,8 @@ updateResolvConf()
     cat > $TEMPFILE <<EOF
 domain scx.com
 search scx.com
-nameserver 10.217.2.6
-nameserver 10.195.172.6
-nameserver 10.231.216.235
+nameserver 10.228.124.13
+nameserver 10.177.9.182
 EOF
 
     local updFlag=0
