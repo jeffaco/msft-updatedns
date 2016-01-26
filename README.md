@@ -11,6 +11,10 @@ In certain environments (primarily with Microsoft DNS server), the DHCP
 address lease does not trigger a DNS server update. This script fixes that
 issue.
 
+**IMPORTANT:** If you use this repository, please click the "Watch" button
+at the top of this page so you know if the script has changed. Otherwise,
+you'll have no way to be aware of changes to UpdateDNS.
+
 ### Design
 
 There are a number of ways that UpdateDNS can work. This is how it does work:
@@ -34,10 +38,18 @@ changed to other mechanisms as necessary if the script is ported elsewhere.
 
 ### Setup
 
-To use UpdateDNS, the host system must be modified to reference the DNS server
-where updates are kept. This is hard-coded in the script, but can trivially be
-changed if necessary. To modify the host Windows system to reference the DNS
-server, this is done via the Control Panel:
+There are two steps to use this script:
+
+1. The script should be installed on your Linux system. This can be done via
+following steps:
+  1. ```git clone https://github.com/jeffaco/msft-updatedns.git updatedns```
+  2. ```cd updatedns; ./updatedns --configure -v```
+
+2. To use UpdateDNS, your development system must should modified to
+reference the DNS server where updates are kept. This is hard-coded in
+the script, but can trivially be changed if necessary. To modify the
+host Windows system to reference the DNS server, this is done via the
+Control Panel:
 
 ![Left](images/1 - Control Panel.jpg)
 
