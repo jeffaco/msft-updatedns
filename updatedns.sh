@@ -143,7 +143,17 @@ getCurrentIPAddress()
 
     case `uname -s` in
 	Darwin)
-	    ACTUAL_IP=`/sbin/ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'`
+	    # Mac OS/X, when running VMware Fusion, is a little tricky ...
+	    # First we need to find the Ethernet interface with an address
+
+	    for i in `seq 0 8`; do
+		if /sbin/ifconfig en$i | grep -q "inet "; then
+		    INTERFACE=en$i
+		    break
+		fi
+	    done
+
+	    ACTUAL_IP=`/sbin/ifconfig $INTERFACE | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'`
 	    ;;
 
 	*)
