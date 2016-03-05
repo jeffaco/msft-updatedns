@@ -3,12 +3,24 @@
 # updatedns.sh: Update dynamic DHCP addresses to scx.com DNS server
 #
 
+VERSION=1.0.5
+
 set -e
 
-SCRIPTNAME=`readlink -e $0`
-BASEDIR=`dirname $SCRIPTNAME`
-VERSION=1.0.4
+# Can't use something like 'readlink -e $0' because that doesn't work everywhere
+# And HP doesn't define $PWD in a sudo environment, so we define our own
+case $0 in
+    /*|~*)
+        SCRIPT_INDIRECT="`dirname $0`"
+        ;;
+    *)
+        PWD="`pwd`"
+        SCRIPT_INDIRECT="`dirname $PWD/$0`"
+        ;;
+esac
 
+BASEDIR="`(cd \"$SCRIPT_INDIRECT\"; pwd -P)`"
+SCRIPTNAME=`basename $0`
 LOGFILE=${BASEDIR}/`basename $SCRIPTNAME .sh`.log
 ROTATESCRIPT=${BASEDIR}/.`basename $SCRIPTNAME .sh`.logrotate
 ROTATESTATE=${BASEDIR}/.`basename $SCRIPTNAME .sh`.logrotatestate
@@ -128,7 +140,16 @@ getCurrentIPAddress()
     #      Less tweaking needed, but older Linux systems and no UNIX systems understand this
 
     #ACTUAL_IP=`ifconfig eth0 | grep "inet " | sed -e 's/inet //g' | awk '{print $1}'`
-    ACTUAL_IP=`/sbin/ip -4 route get 1 | awk '{print $NF; exit}'`
+
+    case `uname -s` in
+	Darwin)
+	    ACTUAL_IP=`ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'`
+	    ;;
+
+	*)
+	    ACTUAL_IP=`/sbin/ip -4 route get 1 | awk '{print $NF; exit}'`
+	    ;;
+    esac
 
     logMessage V "Actual TCP/IP address" "${ACTUAL_IP}"
 }
@@ -250,7 +271,12 @@ EOF
     crontab -l > $TEMPFILE 2> /dev/null || true
     echo "@reboot         ${SCRIPTNAME}" >> $TEMPFILE
     echo "*/15 * * * *    ${SCRIPTNAME}" >> $TEMPFILE
-    echo "2 0 * * 0       /usr/sbin/logrotate --state ${ROTATESTATE} $ROTATESCRIPT" >> $TEMPFILE
+
+    # Mac OS/X doesn't have logrotate; for now, let it grow
+    if [ `uname -s` != "Darwin" ]; then
+	echo "2 0 * * 0       /usr/sbin/logrotate --state ${ROTATESTATE} $ROTATESCRIPT" >> $TEMPFILE
+    fi
+
     crontab $TEMPFILE
 
     logMessage N "Crontab configured to run $SCRIPTNAME automatically"
