@@ -20,7 +20,7 @@ case $0 in
 esac
 
 BASEDIR="`(cd \"$SCRIPT_INDIRECT\"; pwd -P)`"
-SCRIPTNAME=`basename $0`
+SCRIPTNAME=$BASEDIR/`basename $0`
 LOGFILE=${BASEDIR}/`basename $SCRIPTNAME .sh`.log
 ROTATESCRIPT=${BASEDIR}/.`basename $SCRIPTNAME .sh`.logrotate
 ROTATESTATE=${BASEDIR}/.`basename $SCRIPTNAME .sh`.logrotatestate
