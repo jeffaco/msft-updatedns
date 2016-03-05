@@ -143,7 +143,7 @@ getCurrentIPAddress()
 
     case `uname -s` in
 	Darwin)
-	    ACTUAL_IP=`ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'`
+	    ACTUAL_IP=`/sbin/ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}'`
 	    ;;
 
 	*)
