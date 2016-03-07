@@ -30,8 +30,9 @@ While we can integrate more deeply with the DHCP client (thus updating DNS
 immediately after a new address is issued), this is different from system to
 system and thus decreases portability.
 
-Currently, UpdateDNS runs on virtually all Linux systems (Redhat, CentOS,
-SuSE, Debian, Ubuntu). It may be ported to UNIX systems at a later date.
+Currently, UpdateDNS runs on virtually all Linux systems (Redhat,
+CentOS, SuSE, Debian, Ubuntu), as well as Mac OS/X. It may be ported
+to UNIX systems at a later date.
 
 UpdateDNS also keeps it's log files trimmed via logrorate. This may be
 changed to other mechanisms as necessary if the script is ported elsewhere.
