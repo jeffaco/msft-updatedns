@@ -29,6 +29,7 @@ TEMPFILE=/tmp/updatedns_$$
 CONFIGURE=0
 DELETE=0
 FORCE=0
+LOGROTATE=0
 QUERYONLY=0
 UNCONFIGURE=0
 VERBOSE=0
@@ -71,7 +72,7 @@ logMessage()
     fi
 
     if [ -z "$TIMESTAMP" ]; then
-	echo "FATAL: Logic error (logMessage called without \$TIMESTAMP initialized" 1>& 2
+	echo "FATAL: Logic error (logMessage called without \$TIMESTAMP initialized)" 1>& 2
 	cleanExit 1
     fi
 
@@ -105,6 +106,45 @@ logMessage()
 	    echo "$HEADER"
 	fi
     fi
+}
+
+rotateLog()
+{
+    if [ "$LOGROTATE" -ne 1 ]; then
+	return
+    fi
+
+    # If the log file isn't big enough, just return
+    if [ -f ${LOGFILE} ]; then
+	if [ `uname -s` != "Darwin" ]; then
+	    FILESIZE=`stat --printf=%s ${LOGFILE}`
+	else
+	    FILESIZE=`stat -nf %z ${LOGFILE}`
+	fi
+
+	if [ $FILESIZE -lt 50000 ]; then
+	    return
+	fi
+    fi
+
+    # If we're not on our "run dates", just return
+    CURRENT_DAY=`date +%d`
+    if [ ${CURRENT_DAY} -ne 1 -a ${CURRENT_DAY} -ne 15 ]; then
+	return
+    fi
+
+    # Looks like we need to log; first rotate existing log files
+
+    [ -f ${LOGFILE}.3.gz ] && mv ${LOGFILE}.3.gz ${LOGFILE}.4.gz
+    [ -f ${LOGFILE}.2.gz ] && mv ${LOGFILE}.2.gz ${LOGFILE}.3.gz
+    [ -f ${LOGFILE}.1.gz ] && mv ${LOGFILE}.1.gz ${LOGFILE}.2.gz
+
+    # Now move the current logfile and compress it
+
+    mv ${LOGFILE} ${LOGFILE}.1
+    gzip ${LOGFILE}.1
+
+    logMessage N "Performed log file rotation"
 }
 
 getDNSAddress()
@@ -279,12 +319,17 @@ $LOGFILE {
 EOF
 
     crontab -l > $TEMPFILE 2> /dev/null || true
-    echo "@reboot         ${SCRIPTNAME}" >> $TEMPFILE
-    echo "*/15 * * * *    ${SCRIPTNAME}" >> $TEMPFILE
 
-    # Mac OS/X doesn't have logrotate; for now, let it grow
-    if [ `uname -s` != "Darwin" ]; then
+    # Some platforms (Mac OS/X) do not have logrorate.
+    # If we don't find it, then use our own
+
+    if [ -f /usr/sbin/logrotate ]; then
+	echo "@reboot         ${SCRIPTNAME}" >> $TEMPFILE
+	echo "*/15 * * * *    ${SCRIPTNAME}" >> $TEMPFILE
 	echo "2 0 * * 0       /usr/sbin/logrotate --state ${ROTATESTATE} $ROTATESCRIPT" >> $TEMPFILE
+    else
+	echo "@reboot         ${SCRIPTNAME} --logrotate" >> $TEMPFILE
+	echo "*/15 * * * *    ${SCRIPTNAME} --logrotate" >> $TEMPFILE
     fi
 
     crontab $TEMPFILE
@@ -317,6 +362,7 @@ usage()
     echo "  -d, --delete           Delete host from DNS server."
     echo "  -f, --force            Force DNS update even if not required."
     echo "  -q, --queryonly        Only query current IP address (implies verbose)."
+    echo "  -l, --logrotate        Rotate logs ourselves (don't use logrotate program)"
     echo "  --unconfigure          Unconfigure to run automatically via cron."
     echo "  -v, --verbose          Run in verbose mode (produce output)."
     echo "  --version              Show verison number."
@@ -339,6 +385,11 @@ do
 
 	-f | --force)
 	    FORCE=1
+	    shift 1
+	    ;;
+
+	-l | --logrotate)
+	    LOGROTATE=1
 	    shift 1
 	    ;;
 
@@ -380,6 +431,9 @@ if ! TIMESTAMP=`date +%F\ %T`; then
     echo "Unable to get timestamp using 'date' command" 1>& 2
     cleanExit 1
 fi
+
+# Rotate log file manually if appropriate
+rotateLog
 
 logMessage V "Logfile name" "${LOGFILE}"
 
