@@ -48,9 +48,84 @@ following steps:
 
 2. To use UpdateDNS, your development system must should modified to
 reference the DNS server where updates are kept. This is hard-coded in
-the script, but can trivially be changed if necessary. To modify the
-host Windows system to reference the DNS server, this is done via the
-Control Panel:
+the script, but can trivially be changed if necessary.
+Follow either of the below instructions to modify the host Windows system.
+
+#### Using PowerShell
+
+To modify the host Windows system to reference the DNS server,
+we can use PowerShell.
+
+In an *Administrative* PowerShell session:
+
+```powershell
+Set-DnsClientServerAddress -InterfaceAlias Ethernet -ServerAddresses @("10.228.124.13","10.177.9.182")
+Set-DnsClientGlobalSetting -SuffixSearchList @("scx.com","redmond.corp.microsoft.com")
+```
+
+Since `-InterfaceAlias Ethernet` is a guess, if it does not work,
+you can instead use `-InterfaceIndex` and provide the appropriate IPv4 interface
+by the index provided by `Get-DnsClientServerAddress`.
+
+A more verbose example of setting the DNS addresses:
+
+```powershell
+# View your existing settings
+> Get-DnsClientServerAddress
+
+InterfaceAlias               Interface Address ServerAddresses
+                             Index     Family
+--------------               --------- ------- ---------------
+Ethernet                             2 IPv4    {<other IP addresses>}
+...
+
+# Set the "Ethernet" interface's DNS addresses
+> Set-DnsClientServerAddress -ServerAddresses @("10.228.124.13","10.177.9.182") -InterfaceAlias Ethernet
+
+# Verify the changes
+> Get-DnsClientServerAddress
+
+InterfaceAlias               Interface Address ServerAddresses
+                             Index     Family
+--------------               --------- ------- ---------------
+Ethernet                             2 IPv4    {10.228.124.13, 10.177.9.182}
+...
+
+```
+
+A more verbose example of setting the DNS search suffixes:
+
+
+```powershell
+# View your existing settings
+> Get-DnsClientGlobalSetting
+
+UseSuffixSearchList : True
+SuffixSearchList    : {}
+UseDevolution       : True
+DevolutionLevel     : 0
+
+
+# Set the global DNS suffix search list
+> Set-DnsClientGlobalSetting -SuffixSearchList @("scx.com","redmond.corp.microsoft.com")
+
+# Verify the changes
+> Get-DnsClientGlobalSetting
+
+UseSuffixSearchList : True
+SuffixSearchList    : {scx.com, redmond.corp.microsoft.com}
+UseDevolution       : True
+DevolutionLevel     : 0
+
+```
+
+The host Windows DNS settings should now be set.
+You can *alternatively* use the Control Panel instead of PowerShell;
+to do so, follow the below instructions *instead* of the above.
+
+#### Using GUI
+
+This can also be done via the Control Panel:
 
 ![Left](images/1 - Control Panel.jpg)
 
