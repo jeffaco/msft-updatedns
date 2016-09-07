@@ -51,12 +51,54 @@ reference the DNS server where updates are kept. This is hard-coded in
 the script, but can trivially be changed if necessary.
 Follow either of the below instructions to modify the host Windows system.
 
+- [Modifying via Control Panel](#using-gui)
+- [Modifying via PowerShell](#using-powershell)
+
+#### Using GUI
+
+Via the System Control Panel:
+
+![Left](images/1 - Control Panel.jpg)
+
+Select Network and Internet:
+
+![Left](images/2 - Network.jpg)
+
+Select Network and Sharing Center:
+
+![Left](images/3 - Network Sharing.jpg)
+
+Select your network controller:
+
+![Left](images/4 - Controller.jpg)
+
+Click the "Properties" button:
+
+![Left](images/5 - Properties.jpg)
+
+Select "Internet Protocol Version 4 (TP/IP v4) and click "Properties" button:
+
+![Left](images/6 - TCP Properties.jpg)
+
+Select "Use the following DNS server addresses:", enter 10.228.124.13, along with the backup DNS server 10.177.9.182 and click "Advanced":
+
+![Left](images/7 - DNS Settings.jpg)
+
+Select the "DNS" tab, and set up DNS suffixes as shown above. Add these suffixes:
+
+```
+scx.com
+redmond.corp.microsoft.com
+```
+
+Finally, click "OK" and/or "Close" to close each of the dialog boxes.
+
 #### Using PowerShell
 
 To modify the host Windows system to reference the DNS server,
 we can use PowerShell.
 
-In an *Administrative* PowerShell session:
+In an **Administrative** PowerShell session:
 
 ```powershell
 Set-DnsClientServerAddress -InterfaceAlias Ethernet -ServerAddresses @("10.228.124.13","10.177.9.182")
@@ -122,42 +164,3 @@ DevolutionLevel     : 0
 The host Windows DNS settings should now be set.
 You can *alternatively* use the Control Panel instead of PowerShell;
 to do so, follow the below instructions *instead* of the above.
-
-#### Using GUI
-
-This can also be done via the Control Panel:
-
-![Left](images/1 - Control Panel.jpg)
-
-Select Network and Internet:
-
-![Left](images/2 - Network.jpg)
-
-Select Network and Sharing Center:
-
-![Left](images/3 - Network Sharing.jpg)
-
-Select your network controller:
-
-![Left](images/4 - Controller.jpg)
-
-Click the "Properties" button:
-
-![Left](images/5 - Properties.jpg)
-
-Select "Internet Protocol Version 4 (TP/IP v4) and click "Properties" button:
-
-![Left](images/6 - TCP Properties.jpg)
-
-Select "Use the following DNS server addresses:", enter 10.228.124.13, along with the backup DNS server 10.177.9.182 and click "Advanced":
-
-![Left](images/7 - DNS Settings.jpg)
-
-Select the "DNS" tab, and set up DNS suffixes as shown above. Add these suffixes:
-
-```
-scx.com
-redmond.corp.microsoft.com
-```
-
-Finally, click "OK" and/or "Close" to close each of the dialog boxes.
