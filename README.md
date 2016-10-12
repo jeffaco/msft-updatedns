@@ -44,7 +44,7 @@ There are two steps to use this script:
 1. The script should be installed on your Linux system. This can be done via
 following steps:
   1. ```git clone https://github.com/jeffaco/msft-updatedns.git updatedns```
-  2. ```cd updatedns; ./updatedns --configure -v```
+  2. ```cd updatedns; ./updatedns.sh --configure -v```
 
 2. To use UpdateDNS, your development system must should modified to
 reference the DNS server where updates are kept. This is hard-coded in
