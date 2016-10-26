@@ -151,7 +151,7 @@ rotateLog()
 getDNSAddress()
 {
     HOSTNAME=`hostname`
-    if echo $HOSTNAME | grep -q '.scx.com'; then
+    if echo $HOSTNAME | grep -q "\\."; then
 	logMessage F "Host name contains FQDN, and it should not; host name must be changed"
 	cleanExit 1
     fi
