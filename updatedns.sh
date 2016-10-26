@@ -28,6 +28,7 @@ TEMPFILE=/tmp/updatedns_$$
 
 CONFIGURE=0
 DELETE=0
+DELETENAME=0
 FORCE=0
 LOGROTATE=0
 QUERYONLY=0
@@ -150,9 +151,13 @@ rotateLog()
 getDNSAddress()
 {
     HOSTNAME=`hostname`
-    if echo $HOSTNAME | grep '.scx.com'; then
+    if echo $HOSTNAME | grep -q '.scx.com'; then
 	logMessage F "Host name contains FQDN, and it should not; host name must be changed"
 	cleanExit 1
+    fi
+    if echo $HOSTNAME | egrep -qi '^localhost$'; then
+        logMessage F "Host name should not be 'localhost'; host name must be changed"
+        cleanExit 1
     fi
     logMessage V "Hostname for system" "${HOSTNAME}"
 
@@ -359,7 +364,8 @@ usage()
     echo "usage: $1 [OPTIONS]"
     echo "Options:"
     echo "  --configure            Configure to run automatically via cron."
-    echo "  -d, --delete           Delete host from DNS server."
+    echo "  -d, --delete           Delete current host name from DNS server."
+    echo "  -dn, --deletename      Delete specified host name from DNS server."
     echo "  -f, --force            Force DNS update even if not required."
     echo "  -q, --queryonly        Only query current IP address (implies verbose)."
     echo "  -l, --logrotate        Rotate logs ourselves (don't use logrotate program)"
@@ -382,6 +388,25 @@ do
 	    DELETE=1
 	    shift 1
 	    ;;
+
+        -dn | --deletename)
+            DELETENAME=1
+            HOSTNAME=$2
+            DNS_ADDRESS=0.0.0.0
+	    VERBOSE=1
+
+            if [ -z "${HOSTNAME}" ]; then
+	        echo "FATAL: no hostname specified to delete" 1>& 2
+                cleanExit 1
+            fi
+
+            if echo $HOSTNAME | egrep -q -- '^-'; then
+	        echo "FATAL: Host name '${HOSTNAME}' is not valid" 1>& 2
+                cleanExit 1
+            fi
+
+            shift 2
+            ;;
 
 	-f | --force)
 	    FORCE=1
@@ -430,6 +455,13 @@ done
 if ! TIMESTAMP=`date +%F\ %T`; then
     echo "Unable to get timestamp using 'date' command" 1>& 2
     cleanExit 1
+fi
+
+# Delete named host if requested
+# (This must be done early to not overwrite specified hostname)
+
+if [ ${DELETENAME} -ne 0 ]; then
+    deleteIPAddress
 fi
 
 # Rotate log file manually if appropriate
