@@ -24,6 +24,7 @@ SCRIPTNAME=$BASEDIR/`basename $0`
 LOGFILE=${BASEDIR}/`basename $SCRIPTNAME .sh`.log
 ROTATESCRIPT=${BASEDIR}/.`basename $SCRIPTNAME .sh`.logrotate
 ROTATESTATE=${BASEDIR}/.`basename $SCRIPTNAME .sh`.logrotatestate
+STRICT_UNCONFIGURE=0
 TEMPFILE=/tmp/updatedns_$$
 
 CONFIGURE=0
@@ -350,7 +351,27 @@ unconfigure()
     fi
 
     crontab -l > $TEMPFILE 2> /dev/null || true
-    egrep -v "${SCRIPTNAME}|${ROTATESCRIPT}" $TEMPFILE | crontab
+
+    # We can unconfigure in two ways:
+    # 1. "Strict" unconfigure
+    #    Full paths are matched on removal, causing issues if the repo
+    #    is moved without unconfiguring first. To recover from this,
+    #    you must manually edit (or delete) your crontab configuration.
+    #
+    # 2. "Permissive" unconfigure
+    #    Match anything about updatedns. This is easier when moving the
+    #    repository without unconfigurating first. BUT: If you have
+    #    several versions of this repo in different places, we may
+    #    unconfigure "too much" from the crontab file.
+    #
+    # This behavior is controlled by variable STRICT_UNCONFIGURE.
+
+    if [ $STRICT_UNCONFIGURE -eq 1 ]; then
+        egrep -v "${SCRIPTNAME}|${ROTATESCRIPT}" $TEMPFILE | crontab
+    else
+        local SCRIPTNAME_BASE=`basename $SCRIPTNAME .sh`
+        egrep -v "${SCRIPTNAME_BASE}" $TEMPFILE | crontab
+    fi
 
     rm -f $ROTATESCRIPT $ROTATESTATE
 
