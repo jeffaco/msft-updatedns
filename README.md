@@ -39,6 +39,10 @@ changed to other mechanisms as necessary if the script is ported elsewhere.
 
 ### Setup
 
+To use this script on CentOS systems, you must install the `bind-util`
+package. updatedns requires the *dig* program, which is part of the
+bind-util package.
+
 There are two steps to use this script:
 
 1. The script should be installed on your Linux system. This can be done via
