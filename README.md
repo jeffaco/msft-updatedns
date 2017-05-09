@@ -92,8 +92,8 @@ Select the "DNS" tab, and set up DNS suffixes as shown above. Add these suffixes
 
 ```
 scx.com
+corp.microsoft.com
 redmond.corp.microsoft.com
-ntdev.corp.microsoft.com
 ```
 
 Finally, click "OK" and/or "Close" to close each of the dialog boxes.
@@ -107,7 +107,7 @@ In an **Administrative** PowerShell session:
 
 ```powershell
 Set-DnsClientServerAddress -InterfaceAlias Ethernet -ServerAddresses @("10.228.124.13","10.177.9.182")
-Set-DnsClientGlobalSetting -SuffixSearchList @("scx.com","redmond.corp.microsoft.com","ntdev.corp.microsoft.com")
+Set-DnsClientGlobalSetting -SuffixSearchList @("scx.com","corp.microsoft.com","redmond.corp.microsoft.com")
 ```
 
 Since `-InterfaceAlias Ethernet` is a guess, if it does not work,
