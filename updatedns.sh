@@ -151,7 +151,7 @@ rotateLog()
 
 getDNSAddress()
 {
-    HOSTNAME=`hostname`
+    HOSTNAME=`hostname -s`
     if echo $HOSTNAME | grep -q "\\."; then
 	logMessage F "Host name contains FQDN, and it should not; host name must be changed"
 	cleanExit 1
