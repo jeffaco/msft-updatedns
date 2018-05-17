@@ -203,7 +203,7 @@ getCurrentIPAddress()
 	    ;;
 
 	*)
-	    ACTUAL_IP=`/sbin/ip -4 route get 1 | awk '{print $NF; exit}'`
+	    ACTUAL_IP=`/sbin/ip -4 route get 1 | awk '{print $7; exit}'`
 	    ;;
     esac
 
